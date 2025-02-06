@@ -3,7 +3,7 @@
 Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.
 
 ## Code Style and Structure
-
+- When adding dependencies or devDependencies, always give the install command (ex: `npm install <package> --save-dev`). Never just list the package name in the package.json file.
 - Write concise, technical TypeScript code with accurate examples
 - Organize code to maximize Locality of Behavior by ensuring that the code that changes together is stored together
 - Use functional and declarative programming patterns.
@@ -50,7 +50,4 @@ Rules:
 
 - Avoid using external UI libraries; Always create custom resusable components.
 - Use Tailwind CSS for styling.
-
-
-
-
+- For all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.
