@@ -2,6 +2,7 @@
 node_modules/
 dist/
 packages/**/dist/
+packages/**/node_modules/
 
 # Ignore lock files and coverage reports
 package-lock.json

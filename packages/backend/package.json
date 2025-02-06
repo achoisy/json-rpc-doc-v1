@@ -9,6 +9,7 @@
         "build": "tsc",
         "dev": "tsx watch src/index.ts",
         "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
+        "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
         "test": "jest"
     },
     "keywords": [
