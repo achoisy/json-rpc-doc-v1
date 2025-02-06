@@ -7,4 +7,4 @@ describe('GET /health', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ status: 'healthy' });
   });
-}); 
+});

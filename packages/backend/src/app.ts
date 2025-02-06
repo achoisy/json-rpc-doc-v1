@@ -8,4 +8,4 @@ app.get('/health', (_req: Request, res: Response): void => {
   res.json({ status: 'healthy' });
 });
 
-export default app; 
+export default app;

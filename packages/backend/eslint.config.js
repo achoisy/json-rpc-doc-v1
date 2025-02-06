@@ -6,16 +6,16 @@ import baseConfig from '../../eslint.config.js';
  * Overrides TypeScript settings found in the root configuration.
  */
 export default [
-    ...baseConfig,
-    {
-        files: ['**/*.{ts,tsx}'],
-        ignores: ['**/*.test.ts', '**/*.test.tsx'],
-        languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                project: './tsconfig.json',
-                tsconfigRootDir: import.meta.dirname,
-            },
-        }
-    }
+  ...baseConfig,
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['**/*.test.ts', '**/*.test.tsx'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
 ];
