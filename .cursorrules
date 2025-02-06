@@ -1,0 +1,56 @@
+# Guidelines and Rules
+
+Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.
+
+## Code Style and Structure
+
+- Write concise, technical TypeScript code with accurate examples
+- Organize code to maximize Locality of Behavior by ensuring that the code that changes together is stored together
+- Use functional and declarative programming patterns.
+- Use descriptive variable names that are meaningful and concise.
+- Don't include comments unless it's for complex logic
+- Use JSDoc for documentation on functions and variables
+
+## TypeScript Usage
+
+- Use TypeScript for all code; prefer interfaces over types
+- Avoid enums; use const objects with 'as const' assertion
+- Use explicit return types for all functions
+
+## Git Usage
+
+Commit Message Prefixes:
+
+- "🐛" for bug fixes
+- "✨" for new features
+- "⚡️" for performance improvements
+- "🔥" for removing code or files
+- "💄" for UI changes
+- "🎨" for improving code readability
+- "🔍" for fixing code readability
+- "🚨" for fixing linting errors
+- "🚧" for working in progress
+- "🔄" for refactoring code
+- "📝" for updating documentation
+
+Rules:
+
+- Use lowercase for commit messages
+- Keep the summary line concise
+- Include description for non-obvious changes
+
+## Code Documentation
+
+- Maintain clear README with setup instructions
+- Document API interactions and data flows
+- Document permission requirements
+- Use JSDoc for documentation
+
+## Frontend
+
+- Avoid using external UI libraries; Always create custom resusable components.
+- Use Tailwind CSS for styling.
+
+
+
+
