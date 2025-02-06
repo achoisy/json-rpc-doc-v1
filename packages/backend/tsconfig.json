@@ -1,13 +1,17 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "module": "NodeNext",
+        "module": "CommonJS",
+        "noEmit": false,
+        "allowImportingTsExtensions": false,
         "outDir": "dist",
         "rootDir": "src",
         "strict": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "moduleResolution": "NodeNext"
+        "moduleResolution": "node"
     },
-    "include": ["src/**/*"]
-} 
+    "include": [
+        "src/**/*"
+    ]
+}

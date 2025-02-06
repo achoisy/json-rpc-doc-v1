@@ -1,0 +1,12 @@
+# Ignore node_modules and build outputs
+node_modules/
+dist/
+packages/**/dist/
+
+# Ignore lock files and coverage reports
+package-lock.json
+yarn.lock
+coverage/
+
+# Optionally ignore public assets if not intended to be formatted
+public/ 
