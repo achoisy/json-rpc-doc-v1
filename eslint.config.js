@@ -1,7 +1,7 @@
-import js from "@eslint/js";
-import globals from "globals";
-import prettier from "eslint-plugin-prettier";
-import tsEslintPlugin from "@typescript-eslint/eslint-plugin";
+import js from '@eslint/js';
+import globals from 'globals';
+import prettier from 'eslint-plugin-prettier';
+import tsEslintPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 
 /**
@@ -13,74 +13,76 @@ import tsParser from '@typescript-eslint/parser';
  * @type {import('eslint').Linter.FlatConfigItem[]}
  */
 export default [
-    // Base recommended config from ESLint
-    js.configs.recommended,
-    { ignores: ["**/node_modules/**", "**/dist/**"] },
-    {
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.node
-            }
-        }
+  // Base recommended config from ESLint
+  js.configs.recommended,
+  { ignores: ['**/node_modules/**', '**/dist/**'] },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
     },
-    {
-        // Base JavaScript configuration
-        files: ['**/*.{js,jsx}'],
-        languageOptions: {
-            ecmaVersion: "latest",
-            sourceType: "module",
-        }
+  },
+  {
+    // Base JavaScript configuration
+    files: ['**/*.{js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
     },
-    {
-        // TypeScript-specific configuration
-        files: ['**/*.{ts,tsx}'],
-        ignores: ['**/*.test.ts', '**/*.test.tsx'],
-        languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                project: './tsconfig.json'
-            },
-        },
-        plugins: {
-            '@typescript-eslint': tsEslintPlugin
-        },
-        rules: {
-            ...tsEslintPlugin.configs['recommended'].rules,
-            'no-console': 'warn'
-        }
+  },
+  {
+    // TypeScript-specific configuration
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['**/*.{test,spec}.{ts,tsx}', '**/__tests__/**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
-    {
-        // Prettier integration
-        plugins: {
-            prettier
-        },
-        rules: {
-            // 'prettier/prettier': 'warn'
-        }
+    plugins: {
+      '@typescript-eslint': tsEslintPlugin,
     },
-    {
-        // Test files configuration to avoid lint errors in tests
-        files: [
-            "**/*.{test,spec}.{js,jsx,ts,tsx}",
-            "**/tests/**/*.{js,jsx,ts,tsx}",
-        ],
-        languageOptions: {
-            globals: {
-                // Jest globals (adjust these if using another test framework like Mocha or Vitest)
-                describe: "readonly",
-                it: "readonly",
-                test: "readonly",
-                expect: "readonly",
-                beforeAll: "readonly",
-                afterAll: "readonly",
-                beforeEach: "readonly",
-                afterEach: "readonly",
-            },
-        },
-        rules: {
-            "no-console": "off", // allow console statements in tests
-            "no-unused-expressions": "off", // allow Chai/Jest style assertions
-        },
-    }
-]; 
+    rules: {
+      ...tsEslintPlugin.configs['recommended'].rules,
+      'no-console': 'warn',
+    },
+  },
+  {
+    plugins: {
+      prettier,
+    },
+    rules: {
+      // 'prettier/prettier': 'warn'
+    },
+  },
+  {
+    // Test files configuration to avoid lint errors in tests
+    files: [
+      '**/*.{test,spec}.{js,jsx,ts,tsx}',
+      '**/__tests__/**/*.{js,jsx,ts,tsx}',
+    ],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+      },
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
+    rules: {
+      'no-console': 'off', // allow console statements in tests
+      'no-unused-expressions': 'off', // allow Chai/Jest style assertions
+    },
+  },
+];
