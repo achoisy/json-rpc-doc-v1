@@ -1,13 +1,12 @@
 import { OpenRPCService } from '../openrpcService';
-import type { OpenrpcDocumentCustom } from '../../types';
+import type { OpenrpcDocument } from '../../types';
 import { sampleOpenrpcDocument } from '../../mock/openrpcExamples';
 
 describe('OpenRPCService', () => {
   it('returns the provided valid document', () => {
     const service = new OpenRPCService(sampleOpenrpcDocument);
     const document = service.getDocument();
-    expect(document).toHaveProperty('openrpc', '1.2.6');
-    expect(document).toHaveProperty('x-uuid', sampleOpenrpcDocument['x-uuid']);
+    expect(document).toHaveProperty('openrpc', '1.0.0-rc1');
   });
 
   it('returns a non-empty list of methods', () => {
@@ -19,7 +18,7 @@ describe('OpenRPCService', () => {
 
   it('throws an error for an invalid document', () => {
     expect(() => {
-      new OpenRPCService({} as OpenrpcDocumentCustom);
+      new OpenRPCService({} as OpenrpcDocument);
     }).toThrow('Invalid OpenRPC document');
   });
 });

@@ -1,6 +1,6 @@
 import { validateOpenRPCDocument } from '@open-rpc/schema-utils-js';
 import type { MethodObject } from '@open-rpc/meta-schema';
-import { OpenRPCStorage, OpenrpcDocumentCustom } from '../types';
+import { OpenRPCStorage, OpenrpcDocument } from '../types';
 
 /**
  * Service for handling OpenRPC document operations.
@@ -8,7 +8,7 @@ import { OpenRPCStorage, OpenrpcDocumentCustom } from '../types';
 export class OpenRPCService {
   private storage: OpenRPCStorage;
 
-  constructor(document: OpenrpcDocumentCustom) {
+  constructor(document: OpenrpcDocument) {
     const valideOpenrpcDocument = validateOpenRPCDocument(document);
 
     if (valideOpenrpcDocument !== true) {
@@ -29,7 +29,7 @@ export class OpenRPCService {
    *
    * @returns {OpenrpcDocument} The OpenRPC document.
    */
-  public getDocument(): OpenrpcDocumentCustom {
+  public getDocument(): OpenrpcDocument {
     return this.storage.document;
   }
 
@@ -38,7 +38,7 @@ export class OpenRPCService {
    *
    * @returns {OpenrpcDocument['methods']} List of JSON-RPC methods.
    */
-  public getMethods(): OpenrpcDocumentCustom['methods'] {
+  public getMethods(): MethodObject[] {
     return this.storage.methods;
   }
 }
