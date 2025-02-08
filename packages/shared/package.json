@@ -1,0 +1,17 @@
+{
+  "name": "@rpcdoc/shared",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@open-rpc/meta-schema": "^1.14.9",
+    "@open-rpc/schema-utils-js": "^2.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
