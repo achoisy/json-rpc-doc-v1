@@ -9,9 +9,9 @@ export class OpenRPCService {
   private storage: OpenRPCStorage;
 
   constructor(document: OpenrpcDocumentCustom) {
-    const validatedDocument = validateOpenRPCDocument(document);
+    const valideOpenrpcDocument = validateOpenRPCDocument(document);
 
-    if (!validatedDocument) {
+    if (valideOpenrpcDocument !== true) {
       throw new Error('Invalid OpenRPC document');
     }
 
