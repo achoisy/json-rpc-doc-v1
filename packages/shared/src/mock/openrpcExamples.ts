@@ -22,8 +22,8 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
   ],
   methods: [
     {
-      name: 'list_pets',
-      summary: 'List all pets',
+      name: 'pets/dogs/list',
+      summary: 'List all dogs',
       tags: [
         {
           name: 'pets',
@@ -77,8 +77,8 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
       ],
     },
     {
-      name: 'create_pet',
-      summary: 'Create a pet',
+      name: 'pets/dogs/create',
+      summary: 'Create a new dog',
       tags: [
         {
           name: 'pets',
@@ -126,8 +126,8 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
       },
     },
     {
-      name: 'get_pet',
-      summary: 'Info for a specific pet',
+      name: 'pets/cats/list',
+      summary: 'List all cats',
       tags: [
         {
           name: 'pets',
@@ -135,20 +135,92 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
       ],
       params: [
         {
-          $ref: '#/components/contentDescriptors/PetId',
+          name: 'limit',
+          description: 'How many items to return at one time (max 100)',
+          required: false,
+          schema: {
+            type: 'integer',
+            minimum: 1,
+          },
         },
       ],
       result: {
-        name: 'pet',
+        name: 'pets',
+        description: 'A paged array of pets',
+        schema: {
+          $ref: '#/components/schemas/Pets',
+        },
+      },
+      errors: [
+        {
+          code: 100,
+          message: 'pets busy',
+        },
+      ],
+      examples: [
+        {
+          name: 'listPetExample',
+          description: 'List pet example',
+          params: [
+            {
+              name: 'limit',
+              value: 1,
+            },
+          ],
+          result: {
+            name: 'listPetResultExample',
+            value: [
+              {
+                id: 7,
+                name: 'fluffy',
+                tag: 'poodle',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      name: 'pets/cats/medical/vaccinations',
+      summary: 'Get vaccination records',
+      tags: [
+        {
+          name: 'pets',
+        },
+      ],
+      params: [
+        {
+          name: 'petId',
+          description: 'The id of the pet to retrieve',
+          required: true,
+          schema: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      ],
+      result: {
+        name: 'vaccinations',
         description: 'Expected response to a valid request',
         schema: {
-          $ref: '#/components/schemas/Pet',
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              date: {
+                type: 'string',
+              },
+              vaccine: {
+                type: 'string',
+              },
+            },
+          },
         },
       },
       examples: [
         {
-          name: 'getPetExample',
-          description: 'get pet example',
+          name: 'getVaccinationsExample',
+          description: 'get vaccinations example',
           params: [
             {
               name: 'petId',
@@ -156,12 +228,17 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
             },
           ],
           result: {
-            name: 'getPetExampleResult',
-            value: {
-              name: 'fluffy',
-              tag: 'poodle',
-              id: 7,
-            },
+            name: 'getVaccinationsExampleResult',
+            value: [
+              {
+                date: '2023-04-15',
+                vaccine: 'Rabies',
+              },
+              {
+                date: '2023-03-20',
+                vaccine: 'Distemper',
+              },
+            ],
           },
         },
       ],
