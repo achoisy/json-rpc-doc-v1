@@ -103,6 +103,17 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
         name: 'network_id',
         schema: { type: 'string' },
       },
+      errors: [{ $ref: '#/components/errors/InternalError' }],
+      examples: [
+        {
+          name: 'network_version_example',
+          params: [],
+          result: {
+            name: 'network_id',
+            value: '1',
+          },
+        },
+      ],
     },
     {
       name: 'debug/getRawTransaction',
@@ -120,6 +131,28 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
       result: {
         $ref: '#/components/schemas/RawTransaction',
       },
+      errors: [{ code: -32602, message: 'invalid tx hash' }],
+      examples: [
+        {
+          name: 'debug_raw_tx_example',
+          params: [
+            {
+              name: 'txHash',
+              value:
+                '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+            },
+          ],
+          result: {
+            name: 'debug_getRawTransaction',
+            value: {
+              input: '0xabcdef',
+              r: '0x1111',
+              s: '0x2222',
+              v: '0x1',
+            },
+          },
+        },
+      ],
     },
     {
       name: 'txpool/content',
@@ -140,6 +173,38 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
           },
         },
       },
+      errors: [{ $ref: '#/components/errors/InternalError' }],
+      examples: [
+        {
+          name: 'txpool_content_example',
+          params: [],
+          result: {
+            name: 'txpool_content',
+            value: {
+              pending: {
+                '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae': [
+                  {
+                    hash: '0x123',
+                    from: '0xabc',
+                    to: '0xdef',
+                    value: '0x456',
+                  },
+                ],
+              },
+              queued: {
+                '0xde0b295669a9fd93d5f28d9ec85e40f4cb697ba1': [
+                  {
+                    hash: '0x789',
+                    from: '0xdef',
+                    to: '0xghi',
+                    value: '0x101',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      ],
     },
     {
       name: 'eth/getBalance',
@@ -214,6 +279,33 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
       errors: [
         { code: -32600, message: 'Invalid filter parameters' },
         { code: -32005, message: 'Query timeout' },
+      ],
+      examples: [
+        {
+          name: 'get_logs_example',
+          params: [
+            {
+              name: 'filter',
+              value: {
+                fromBlock: '0x1',
+                toBlock: '0x2',
+                address: '0x1234567890abcdef1234567890abcdef12345678',
+                topics: ['0xdeadbeef'],
+              },
+            },
+          ],
+          result: {
+            name: 'logs',
+            value: [
+              {
+                address: '0x1234567890abcdef1234567890abcdef12345678',
+                topics: ['0xdeadbeef'],
+                data: '0xdata',
+                blockNumber: '0x10',
+              },
+            ],
+          },
+        },
       ],
     },
   ],
