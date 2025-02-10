@@ -14,6 +14,7 @@ export interface FileTreeNodeProps {
   onToggle: (path: string) => void;
   onSelect: (method: MethodObject) => void;
   selectedMethod: MethodObject | null;
+  className?: string;
 }
 
 const FileTreeNode: React.FC<FileTreeNodeProps> = ({
@@ -22,12 +23,13 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({
   onToggle,
   onSelect,
   selectedMethod,
+  className,
 }) => {
   const isFolder = node.children.size > 0;
   const isSelected = selectedMethod?.name === node.fullPath;
 
   return (
-    <div className="space-y-1">
+    <div className={`space-y-1 ${className || ''}`}>
       <div
         className={`flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors cursor-pointer ${
           isSelected

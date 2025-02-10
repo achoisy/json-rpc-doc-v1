@@ -11,6 +11,7 @@ export interface DropdownMenuProps {
   options: DropdownMenuOption[];
   selectedValue: string;
   onSelect: (value: string) => void;
+  className?: string;
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
@@ -18,11 +19,12 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   options,
   selectedValue,
   onSelect,
+  className,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
