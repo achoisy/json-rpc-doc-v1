@@ -29,12 +29,12 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({
   return (
     <div className="space-y-1">
       <div
-        className={`flex items-center gap-2 px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+        className={`flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors cursor-pointer ${
           isSelected
             ? 'bg-blue-50 dark:bg-gray-800 text-blue-600 dark:text-blue-400'
             : 'hover:bg-gray-100 dark:hover:bg-gray-800'
         }`}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
+        style={{ paddingLeft: `${level * 12 + 8}px` }}
         onClick={() => {
           if (isFolder) {
             onToggle(node.fullPath);

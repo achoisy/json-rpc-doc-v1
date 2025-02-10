@@ -34,9 +34,9 @@ const OpenRPCViewer: React.FC = () => {
   const [selectedVersion, setSelectedVersion] = useState(document.info.version);
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-gray-900">
+    <div className="flex flex-col md:flex-row w-full min-h-screen bg-white dark:bg-gray-900">
       {/* Sidebar */}
-      <div className="w-80 border-r border-gray-200 dark:border-gray-800 p-6 overflow-y-auto">
+      <div className="w-full md:w-80 border-r border-gray-200 dark:border-gray-800 p-4 md:p-6 overflow-y-auto z-10">
         <div className="mb-8">
           <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
             {document.info.title}
@@ -69,7 +69,7 @@ const OpenRPCViewer: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto">
         {selectedMethod ? (
           <MethodDetail method={selectedMethod} />
         ) : (

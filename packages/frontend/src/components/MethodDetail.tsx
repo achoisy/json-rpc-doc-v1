@@ -12,7 +12,7 @@ export interface MethodDetailProps {
 const MethodDetail: React.FC<MethodDetailProps> = ({ method }) => (
   <div className="space-y-6">
     <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+      <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">
         {method.name}
       </h2>
       <p className="mt-2 text-gray-600 dark:text-gray-300">{method.summary}</p>
@@ -69,7 +69,7 @@ const MethodDetail: React.FC<MethodDetailProps> = ({ method }) => (
         <DocumentTextIcon className="w-5 h-5" />
         Example Request
       </h3>
-      <pre className="p-4 bg-gray-800 text-gray-100 rounded-lg overflow-x-auto">
+      <pre className="p-4 bg-gray-800 text-gray-100 rounded-lg overflow-x-auto max-w-full">
         <code>
           {JSON.stringify({ method: method.name, params: [] }, null, 2)}
         </code>
