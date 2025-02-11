@@ -6,7 +6,7 @@ const NavBar: React.FC = () => (
       <div className="flex items-center h-14">
         <div className="flex items-center space-x-4">
           <span className="text-lg font-semibold text-gray-900 dark:text-white">
-            ⚡️ API Documentation
+            ⚡️ JSON-RPC Documentation
           </span>
         </div>
       </div>
