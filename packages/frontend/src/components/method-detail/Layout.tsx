@@ -1,10 +1,12 @@
 import React from 'react';
 import type { MethodObject } from '@rpcdoc/shared';
-import { MethodHeader } from './MethodHeader';
-import { ParametersSection } from './ParametersSection';
-import { ResultSection } from './ResultSection';
-import { ErrorsSection } from './ErrorsSection';
-import { ExamplesSection } from './ExamplesSection';
+import {
+  MethodHeader,
+  ParametersSection,
+  ResultSection,
+  ErrorsSection,
+  ExamplesSection,
+} from './components';
 
 interface LayoutProps {
   method: MethodObject;
