@@ -1,449 +1,687 @@
 import type { OpenrpcDocument } from '../types';
 
 export const sampleOpenrpcDocument: OpenrpcDocument = {
-  openrpc: '1.2.4',
+  openrpc: '1.2.6',
   info: {
-    title: 'Ethereum JSON-RPC API',
+    title: 'Sample JSON-RPC API (Loyalty & Rewards)',
     version: '1.0.0',
     description:
-      'Ethereum-inspired JSON-RPC API with hierarchical method structure',
-    license: {
-      name: 'Apache 2.0',
-      url: 'https://www.apache.org/licenses/LICENSE-2.0.html',
-    },
+      'A sample JSON-RPC API specification demonstrating the OpenRPC schema for a loyalty and reward program.',
   },
   servers: [
     {
-      name: 'Mainnet',
-      url: 'https://mainnet.example.com/rpc',
-      summary: 'Production Ethereum network',
+      name: 'Production Server',
+      url: 'https://api.example.com/jsonrpc',
     },
     {
-      name: 'Testnet',
-      url: 'https://testnet.example.com/rpc',
-      summary: 'Test network (Görli)',
+      name: 'Development Server',
+      url: 'http://localhost:4000/jsonrpc',
     },
   ],
   methods: [
     {
-      name: 'eth/blockNumber',
-      summary: 'Returns the current block number',
-      description: 'Returns the number of most recent block',
-      tags: [{ name: 'eth' }],
-      params: [],
+      name: 'loyalty/createAccount',
+      summary: 'Create a new loyalty account.',
+      description: 'Creates a new loyalty account for a given customer.',
+      tags: [{ name: 'loyalty' }, { name: 'account' }],
+      params: [
+        {
+          name: 'account',
+          schema: {
+            $ref: '#/components/schemas/NewLoyaltyAccount',
+          },
+          description: 'Data required to create a new loyalty account.',
+        },
+      ],
       result: {
-        name: 'blockNumber',
+        name: 'createdAccount',
+        description: 'The newly created loyalty account.',
         schema: {
-          type: 'string',
-          pattern: '^0x[0-9a-fA-F]+$',
-          examples: ['0x5bad55'],
+          $ref: '#/components/schemas/LoyaltyAccount',
         },
       },
-      errors: [{ $ref: '#/components/errors/InvalidParams' }],
       examples: [
         {
-          name: 'current_block',
-          params: [],
-          result: {
-            name: 'current_block',
-            description: 'Current block number',
-            value: '0x5bad55',
-          },
-        },
-      ],
-    },
-    {
-      name: 'eth/getBlockByNumber',
-      summary: 'Returns block information by block number',
-      tags: [{ name: 'eth' }],
-      params: [
-        {
-          name: 'blockNumber',
-          description: 'Hex block number, or "latest"',
-          schema: {
-            oneOf: [
-              { type: 'string', pattern: '^0x[0-9a-fA-F]+$' },
-              { enum: ['latest', 'earliest', 'pending'] },
-            ],
-          },
-        },
-        {
-          name: 'includeFullTransactions',
-          schema: { type: 'boolean' },
-        },
-      ],
-      result: {
-        $ref: '#/components/schemas/Block',
-      },
-      errors: [{ code: -32602, message: 'Invalid block number format' }],
-      examples: [
-        {
-          name: 'get_block_example',
-          params: [
-            { name: 'blockNumber', value: 'latest' },
-            { name: 'includeFullTransactions', value: false },
-          ],
-          result: {
-            name: 'get_block_example',
-            value: {
-              number: '0x5bad55',
-              transactions: [],
-              timestamp: '0x5f5e0a6a',
-            },
-          },
-        },
-        {
-          name: 'get_block_example',
-          params: [
-            { name: 'blockNumber', value: 'latest' },
-            { name: 'includeFullTransactions', value: false },
-          ],
-          result: {
-            name: 'get_block_example',
-            value: {
-              number: '0x5bad55',
-              transactions: [],
-              timestamp: '0x5f5e0a6a',
-            },
-          },
-        },
-      ],
-    },
-    {
-      name: 'net/version',
-      summary: 'Returns network ID',
-      tags: [{ name: 'net' }],
-      params: [],
-      result: {
-        name: 'network_id',
-        schema: { type: 'string' },
-      },
-      errors: [{ $ref: '#/components/errors/InternalError' }],
-      examples: [
-        {
-          name: 'network_version_example',
-          params: [],
-          result: {
-            name: 'network_id',
-            value: '1',
-          },
-        },
-      ],
-    },
-    {
-      name: 'debug/getRawTransaction',
-      summary: 'Debug method to get raw transaction data',
-      tags: [{ name: 'debug' }],
-      params: [
-        {
-          name: 'txHash',
-          schema: {
-            type: 'string',
-            pattern: '^0x[0-9a-fA-F]{64}$',
-          },
-        },
-      ],
-      result: {
-        $ref: '#/components/schemas/RawTransaction',
-      },
-      errors: [{ code: -32602, message: 'invalid tx hash' }],
-      examples: [
-        {
-          name: 'debug_raw_tx_example',
+          name: 'Basic account creation example',
+          description:
+            'Creating a loyalty account for an existing customer with default currency.',
           params: [
             {
-              name: 'txHash',
-              value:
-                '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+              name: 'Example params',
+              value: {
+                account: {
+                  customerId: 'cust-001',
+                  balance: 0,
+                  currency: 'USD',
+                },
+              },
             },
           ],
           result: {
-            name: 'debug_getRawTransaction',
+            name: 'Example result',
             value: {
-              input: '0xabcdef',
-              r: '0x1111',
-              s: '0x2222',
-              v: '0x1',
-            },
-          },
-        },
-      ],
-    },
-    {
-      name: 'txpool/content',
-      summary: 'Returns transactions in the mempool',
-      tags: [{ name: 'txpool' }],
-      params: [],
-      result: {
-        name: 'txpool_content',
-        schema: {
-          type: 'object',
-          properties: {
-            pending: {
-              $ref: '#/components/schemas/TransactionMap',
-            },
-            queued: {
-              $ref: '#/components/schemas/TransactionMap',
-            },
-          },
-        },
-      },
-      errors: [{ $ref: '#/components/errors/InternalError' }],
-      examples: [
-        {
-          name: 'txpool_content_example',
-          params: [],
-          result: {
-            name: 'txpool_content',
-            value: {
-              pending: {
-                '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae': [
-                  {
-                    hash: '0x123',
-                    from: '0xabc',
-                    to: '0xdef',
-                    value: '0x456',
-                  },
-                ],
-              },
-              queued: {
-                '0xde0b295669a9fd93d5f28d9ec85e40f4cb697ba1': [
-                  {
-                    hash: '0x789',
-                    from: '0xdef',
-                    to: '0xghi',
-                    value: '0x101',
-                  },
-                ],
+              createdAccount: {
+                id: 'acc-001',
+                customerId: 'cust-001',
+                balance: 0,
+                currency: 'USD',
+                createdAt: '2025-01-01T12:00:00Z',
               },
             },
           },
         },
       ],
-    },
-    {
-      name: 'eth/getBalance',
-      summary: 'Returns balance of given address',
-      description: 'Returns the account balance in wei as hex string',
-      tags: [{ name: 'eth' }],
-      params: [
-        {
-          name: 'address',
-          schema: {
-            type: 'string',
-            pattern: '^0x[0-9a-fA-F]{40}$',
-            examples: ['0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'],
-          },
-        },
-        {
-          name: 'block',
-          schema: {
-            oneOf: [
-              { type: 'string', pattern: '^0x[0-9a-fA-F]+$' },
-              { enum: ['latest', 'earliest', 'pending'] },
-            ],
-          },
-        },
-      ],
-      result: {
-        name: 'balance',
-        schema: {
-          type: 'string',
-          pattern: '^0x[0-9a-fA-F]+$',
-          examples: ['0x16345785d8a0000'],
-        },
-      },
       errors: [
-        { $ref: '#/components/errors/InvalidParams' },
-        { code: -32001, message: 'Address not found' },
-      ],
-      examples: [
         {
-          name: 'mainnet_balance',
-          params: [
-            {
-              name: 'address',
-              value: '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae',
-            },
-            { name: 'block', value: 'latest' },
-          ],
-          result: {
-            name: 'mainnet_balance',
-            value: '0x16345785d8a0000',
-          },
+          code: -32602,
+          message: 'Invalid params',
+          data: 'Missing required fields or invalid data.',
+        },
+        {
+          code: 401,
+          message: 'Unauthorized',
+          data: 'Invalid API key or session token.',
         },
       ],
     },
     {
-      name: 'eth/getLogs',
-      summary: 'Returns logs matching filter criteria',
-      tags: [{ name: 'eth' }],
+      name: 'loyalty/getAccount',
+      summary: 'Retrieve a loyalty account.',
+      description: 'Returns details of an existing loyalty account.',
+      tags: [{ name: 'loyalty' }, { name: 'account' }],
       params: [
         {
-          name: 'filter',
-          schema: { $ref: '#/components/schemas/LogFilter' },
+          name: 'accountId',
+          schema: {
+            type: 'string',
+          },
+          description: 'ID of the loyalty account to retrieve.',
         },
       ],
       result: {
-        name: 'logs',
+        name: 'account',
+        description: 'The loyalty account details.',
+        schema: {
+          $ref: '#/components/schemas/LoyaltyAccount',
+        },
+      },
+      examples: [
+        {
+          name: 'Get account by ID',
+          description: 'Retrieve loyalty account details using its ID.',
+          params: [
+            {
+              name: 'Example params',
+              value: {
+                accountId: 'acc-001',
+              },
+            },
+          ],
+          result: {
+            name: 'Example result',
+            value: {
+              account: {
+                id: 'acc-001',
+                customerId: 'cust-001',
+                balance: 150,
+                currency: 'USD',
+                createdAt: '2025-01-01T12:00:00Z',
+              },
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          code: 404,
+          message: 'Not Found',
+          data: 'No loyalty account found with the specified ID.',
+        },
+        {
+          code: -32602,
+          message: 'Invalid params',
+          data: 'The provided accountId is invalid.',
+        },
+      ],
+    },
+    {
+      name: 'loyalty/addPoints',
+      summary: 'Add loyalty points.',
+      description: 'Adds loyalty points to an existing account.',
+      tags: [{ name: 'loyalty' }, { name: 'account' }, { name: 'points' }],
+      params: [
+        {
+          name: 'accountId',
+          schema: {
+            type: 'string',
+          },
+          description: 'ID of the loyalty account to update.',
+        },
+        {
+          name: 'points',
+          schema: {
+            type: 'number',
+          },
+          description: 'Number of points to add.',
+        },
+      ],
+      result: {
+        name: 'updatedAccount',
+        description: 'The loyalty account after points have been added.',
+        schema: {
+          $ref: '#/components/schemas/LoyaltyAccount',
+        },
+      },
+      examples: [
+        {
+          name: 'Add points example',
+          description: "Add 50 points to a user's loyalty account.",
+          params: [
+            {
+              name: 'Example params',
+              value: {
+                accountId: 'acc-001',
+                points: 50,
+              },
+            },
+          ],
+          result: {
+            name: 'Example result',
+            value: {
+              updatedAccount: {
+                id: 'acc-001',
+                customerId: 'cust-001',
+                balance: 200,
+                currency: 'USD',
+                createdAt: '2025-01-01T12:00:00Z',
+              },
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          code: 404,
+          message: 'Not Found',
+          data: 'Loyalty account not found.',
+        },
+        {
+          code: 400,
+          message: 'Bad Request',
+          data: 'Points must be a positive number.',
+        },
+      ],
+    },
+    {
+      name: 'loyalty/spendPoints',
+      summary: 'Spend loyalty points.',
+      description: 'Removes or redeems loyalty points from an account.',
+      tags: [{ name: 'loyalty' }, { name: 'account' }, { name: 'points' }],
+      params: [
+        {
+          name: 'accountId',
+          schema: {
+            type: 'string',
+          },
+          description: 'ID of the loyalty account to update.',
+        },
+        {
+          name: 'points',
+          schema: {
+            type: 'number',
+          },
+          description: 'Number of points to spend.',
+        },
+      ],
+      result: {
+        name: 'updatedAccount',
+        description: 'The loyalty account after points have been spent.',
+        schema: {
+          $ref: '#/components/schemas/LoyaltyAccount',
+        },
+      },
+      examples: [
+        {
+          name: 'Spend points example',
+          description: 'Spend 20 points from an account.',
+          params: [
+            {
+              name: 'Example params',
+              value: {
+                accountId: 'acc-001',
+                points: 20,
+              },
+            },
+          ],
+          result: {
+            name: 'Example result',
+            value: {
+              updatedAccount: {
+                id: 'acc-001',
+                customerId: 'cust-001',
+                balance: 130,
+                currency: 'USD',
+                createdAt: '2025-01-01T12:00:00Z',
+              },
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          code: 400,
+          message: 'Insufficient Points',
+          data: 'Balance is too low to spend the requested amount of points.',
+        },
+        {
+          code: 404,
+          message: 'Not Found',
+          data: 'No loyalty account found with the specified ID.',
+        },
+      ],
+    },
+    {
+      name: 'loyalty/getTransactions',
+      summary: 'Retrieve transaction history.',
+      description:
+        'Returns a list of all transactions for a given loyalty account.',
+      tags: [
+        { name: 'loyalty' },
+        { name: 'account' },
+        { name: 'transactions' },
+      ],
+      params: [
+        {
+          name: 'accountId',
+          schema: {
+            type: 'string',
+          },
+          description:
+            'ID of the loyalty account whose transaction history is requested.',
+        },
+      ],
+      result: {
+        name: 'transactions',
+        description: 'List of all transactions for the specified account.',
         schema: {
           type: 'array',
-          items: { $ref: '#/components/schemas/Log' },
+          items: {
+            $ref: '#/components/schemas/Transaction',
+          },
         },
       },
-      errors: [
-        { code: -32600, message: 'Invalid filter parameters' },
-        { code: -32005, message: 'Query timeout' },
-      ],
       examples: [
         {
-          name: 'get_logs_example',
+          name: 'Get transactions example',
+          description: 'Retrieve transaction history for a loyalty account.',
           params: [
             {
-              name: 'filter',
+              name: 'Example params',
               value: {
-                fromBlock: '0x1',
-                toBlock: '0x2',
-                address: '0x1234567890abcdef1234567890abcdef12345678',
-                topics: ['0xdeadbeef'],
+                accountId: 'acc-001',
               },
             },
           ],
           result: {
-            name: 'logs',
-            value: [
-              {
-                address: '0x1234567890abcdef1234567890abcdef12345678',
-                topics: ['0xdeadbeef'],
-                data: '0xdata',
-                blockNumber: '0x10',
-              },
-            ],
+            name: 'Example result',
+            value: {
+              transactions: [
+                {
+                  id: 'txn-1001',
+                  accountId: 'acc-001',
+                  type: 'add',
+                  points: 100,
+                  timestamp: '2025-01-01T12:00:00Z',
+                },
+                {
+                  id: 'txn-1002',
+                  accountId: 'acc-001',
+                  type: 'spend',
+                  points: 50,
+                  timestamp: '2025-01-02T10:00:00Z',
+                },
+              ],
+            },
           },
+        },
+      ],
+      errors: [
+        {
+          code: 404,
+          message: 'Not Found',
+          data: 'No loyalty account found with the specified ID.',
+        },
+      ],
+    },
+    {
+      name: 'customer/createCustomer',
+      summary: 'Create a new customer.',
+      description: 'Adds a customer to the system.',
+      tags: [{ name: 'customer' }],
+      params: [
+        {
+          name: 'customer',
+          schema: {
+            $ref: '#/components/schemas/NewCustomer',
+          },
+          description: 'The new customer object to create.',
+        },
+      ],
+      result: {
+        name: 'createdCustomer',
+        description: 'The newly created customer.',
+        schema: {
+          $ref: '#/components/schemas/Customer',
+        },
+      },
+      examples: [
+        {
+          name: 'Create customer',
+          description: 'Basic example of creating a new customer.',
+          params: [
+            {
+              name: 'Example params',
+              value: {
+                customer: {
+                  username: 'john_doe',
+                  email: 'john@doe.com',
+                  password: 'p@ssw0rd',
+                },
+              },
+            },
+          ],
+          result: {
+            name: 'Example result',
+            value: {
+              createdCustomer: {
+                id: 'cust-001',
+                username: 'john_doe',
+                email: 'john@doe.com',
+                registeredAt: '2025-01-01T12:00:00Z',
+              },
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          code: 409,
+          message: 'Conflict',
+          data: 'A customer with that email already exists.',
+        },
+        {
+          code: -32602,
+          message: 'Invalid params',
+          data: 'Missing or invalid data for creating a customer.',
+        },
+      ],
+    },
+    {
+      name: 'customer/getCustomer',
+      summary: 'Retrieve a customer by ID.',
+      description: 'Returns details about a customer.',
+      tags: [{ name: 'customer' }],
+      params: [
+        {
+          name: 'customerId',
+          schema: {
+            type: 'string',
+          },
+          description: 'ID of the customer.',
+        },
+      ],
+      result: {
+        name: 'customer',
+        description: 'The customer object.',
+        schema: {
+          $ref: '#/components/schemas/Customer',
+        },
+      },
+      examples: [
+        {
+          name: 'Get customer by ID',
+          description: "Fetch an existing customer's record.",
+          params: [
+            {
+              name: 'Example params',
+              value: {
+                customerId: 'cust-001',
+              },
+            },
+          ],
+          result: {
+            name: 'Example result',
+            value: {
+              customer: {
+                id: 'cust-001',
+                username: 'john_doe',
+                email: 'john@doe.com',
+                registeredAt: '2025-01-01T12:00:00Z',
+              },
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          code: 404,
+          message: 'Not Found',
+          data: 'No customer found with the specified ID.',
+        },
+      ],
+    },
+    {
+      name: 'auth/login',
+      summary: 'Login user.',
+      description: 'Returns a session token if successful.',
+      tags: [{ name: 'auth' }],
+      params: [
+        {
+          name: 'username',
+          schema: {
+            type: 'string',
+          },
+          description: 'Username.',
+        },
+        {
+          name: 'password',
+          schema: {
+            type: 'string',
+          },
+          description: "User's password.",
+        },
+      ],
+      result: {
+        name: 'token',
+        description: 'Session token.',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Login',
+          description: 'Basic example of user login.',
+          params: [
+            {
+              name: 'Example params',
+              value: {
+                username: 'john_doe',
+                password: 'p@ssw0rd',
+              },
+            },
+          ],
+          result: {
+            name: 'Example result',
+            value: {
+              token: 'abcd1234',
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          code: 401,
+          message: 'Unauthorized',
+          data: 'Invalid credentials provided.',
+        },
+      ],
+    },
+    {
+      name: 'auth/logout',
+      summary: 'Logout user.',
+      description: 'Invalidates the current user session.',
+      tags: [{ name: 'auth' }],
+      params: [
+        {
+          name: 'token',
+          schema: {
+            type: 'string',
+          },
+          description: 'Session token to invalidate.',
+        },
+      ],
+      result: {
+        name: 'success',
+        description:
+          'Indicates whether the session was successfully invalidated.',
+        schema: {
+          type: 'boolean',
+        },
+      },
+      examples: [
+        {
+          name: 'Logout',
+          description: 'Basic logout example.',
+          params: [
+            {
+              name: 'Example params',
+              value: {
+                token: 'abcd1234',
+              },
+            },
+          ],
+          result: {
+            name: 'Example result',
+            value: {
+              success: true,
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          code: 401,
+          message: 'Unauthorized',
+          data: 'Invalid or expired token.',
         },
       ],
     },
   ],
   components: {
     schemas: {
-      Block: {
+      LoyaltyAccount: {
         type: 'object',
         properties: {
-          number: { type: 'string', description: 'Block number in hex' },
-          hash: { type: 'string' },
-          parentHash: { type: 'string' },
-          transactions: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Transaction' },
+          id: {
+            type: 'string',
           },
-          timestamp: { type: 'string' },
+          customerId: {
+            type: 'string',
+          },
+          balance: {
+            type: 'number',
+          },
+          currency: {
+            type: 'string',
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+          },
         },
-        required: ['number', 'hash', 'parentHash'],
+        required: ['id', 'customerId', 'balance'],
+      },
+      NewLoyaltyAccount: {
+        type: 'object',
+        properties: {
+          customerId: {
+            type: 'string',
+          },
+          balance: {
+            type: 'number',
+            default: 0,
+          },
+          currency: {
+            type: 'string',
+            default: 'USD',
+          },
+        },
+        required: ['customerId'],
       },
       Transaction: {
         type: 'object',
         properties: {
-          hash: { type: 'string' },
-          from: { type: 'string' },
-          to: { type: 'string' },
-          value: { type: 'string' },
-        },
-        required: ['hash', 'from'],
-      },
-      RawTransaction: {
-        type: 'object',
-        properties: {
-          input: { type: 'string' },
-          r: { type: 'string' },
-          s: { type: 'string' },
-          v: { type: 'string' },
-        },
-      },
-      TransactionMap: {
-        type: 'object',
-        additionalProperties: {
-          type: 'array',
-          items: { $ref: '#/components/schemas/Transaction' },
-        },
-      },
-      Log: {
-        type: 'object',
-        properties: {
-          address: { type: 'string' },
-          topics: {
-            type: 'array',
-            items: { type: 'string' },
+          id: {
+            type: 'string',
           },
-          data: { type: 'string' },
-          blockNumber: { type: 'string' },
-        },
-        required: ['address', 'blockNumber'],
-      },
-      LogFilter: {
-        type: 'object',
-        properties: {
-          fromBlock: { type: 'string' },
-          toBlock: { type: 'string' },
-          address: {
-            oneOf: [
-              { type: 'string' },
-              { type: 'array', items: { type: 'string' } },
-            ],
+          accountId: {
+            type: 'string',
           },
-          topics: {
-            type: 'array',
-            items: {
-              oneOf: [
-                { type: 'string' },
-                { type: 'array', items: { type: 'string' } },
-              ],
-            },
+          type: {
+            type: 'string',
+            enum: ['add', 'spend', 'adjust'],
+          },
+          points: {
+            type: 'number',
+          },
+          timestamp: {
+            type: 'string',
+            format: 'date-time',
           },
         },
+        required: ['id', 'accountId', 'type', 'points', 'timestamp'],
       },
-      MempoolStatus: {
+      Customer: {
         type: 'object',
         properties: {
-          pendingCount: { type: 'number' },
-          queuedCount: { type: 'number' },
-          transactions: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Transaction' },
+          id: {
+            type: 'string',
+          },
+          username: {
+            type: 'string',
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+          },
+          registeredAt: {
+            type: 'string',
+            format: 'date-time',
           },
         },
+        required: ['id', 'username', 'email'],
+      },
+      NewCustomer: {
+        type: 'object',
+        properties: {
+          username: {
+            type: 'string',
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+          },
+          password: {
+            type: 'string',
+          },
+        },
+        required: ['username', 'email', 'password'],
       },
     },
-    errors: {
-      InvalidParams: {
-        code: -32602,
-        message: 'Invalid parameters',
-        data: { type: 'string' },
-      },
-      InternalError: {
-        code: -32603,
-        message: 'Internal server error',
-        data: { type: 'string' },
-      },
-      RateLimitExceeded: {
-        code: -32000,
-        message: 'Request limit exceeded',
-        data: {
-          type: 'object',
-          properties: {
-            retryAfter: { type: 'number' },
-          },
-        },
-      },
-      MethodDeprecated: {
-        code: -32604,
-        message: 'Method deprecated',
-        data: {
-          type: 'object',
-          properties: {
-            alternative: { type: 'string' },
-          },
-        },
-      },
-    },
+  },
+  externalDocs: {
+    description: 'Find more info here.',
+    url: 'https://open-rpc.org',
   },
 };
