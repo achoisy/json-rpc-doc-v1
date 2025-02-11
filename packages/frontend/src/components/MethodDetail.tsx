@@ -24,7 +24,7 @@ const MethodDetail: React.FC<MethodDetailProps> = ({
 }) => (
   <div className="space-y-6">
     {documentTitle && (
-      <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+      <div className="border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
@@ -44,12 +44,10 @@ const MethodDetail: React.FC<MethodDetailProps> = ({
         </div>
       </div>
     )}
-    <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-      <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">
-        {method.name}
-      </h2>
-      <p className="mt-2 text-gray-600 dark:text-gray-300">{method.summary}</p>
-    </div>
+    <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">
+      {method.name}
+    </h2>
+    <p className="mt-2 text-gray-600 dark:text-gray-300">{method.summary}</p>
 
     {method.params && (
       <div>
