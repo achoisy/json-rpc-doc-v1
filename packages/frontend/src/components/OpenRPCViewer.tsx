@@ -7,9 +7,7 @@ import {
 
 import MethodDetail from './MethodDetail';
 import FileTreeNode from './FileTreeNode';
-import DropdownMenu from '../design/DropdownMenu';
 import { useFileTree } from '../hooks/useFileTree';
-import BreadCrumb from '../design/BreadCrumb';
 import NavBar from '../design/NavBar';
 
 /**
