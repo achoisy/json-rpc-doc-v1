@@ -2,6 +2,7 @@ import React from 'react';
 import { CodeBracketIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { MethodObject } from '@rpcdoc/shared';
 import BreadCrumb from '../design/BreadCrumb';
+import DropdownMenu from '../design/DropdownMenu';
 
 /**
  * A component for displaying method details.
@@ -9,19 +10,38 @@ import BreadCrumb from '../design/BreadCrumb';
 export interface MethodDetailProps {
   method: MethodObject;
   documentTitle?: string;
+  versionOptions?: { value: string; label: string }[];
+  selectedVersion?: string;
+  onVersionChange?: (version: string) => void;
 }
 
 const MethodDetail: React.FC<MethodDetailProps> = ({
   method,
   documentTitle,
+  versionOptions,
+  selectedVersion,
+  onVersionChange,
 }) => (
   <div className="space-y-6">
     {documentTitle && (
       <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
-          {documentTitle}
-        </h1>
-        <BreadCrumb path={method.name} />
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+              {documentTitle}
+            </h1>
+            <BreadCrumb path={method.name} />
+          </div>
+          {versionOptions && selectedVersion && onVersionChange && (
+            <DropdownMenu
+              label={`Version ${selectedVersion}`}
+              options={versionOptions}
+              selectedValue={selectedVersion}
+              onSelect={onVersionChange}
+              className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            />
+          )}
+        </div>
       </div>
     )}
     <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
