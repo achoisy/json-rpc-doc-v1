@@ -1,16 +1,29 @@
 import React from 'react';
 import { CodeBracketIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { MethodObject } from '@rpcdoc/shared';
+import BreadCrumb from '../design/BreadCrumb';
 
 /**
  * A component for displaying method details.
  */
 export interface MethodDetailProps {
   method: MethodObject;
+  documentTitle?: string;
 }
 
-const MethodDetail: React.FC<MethodDetailProps> = ({ method }) => (
+const MethodDetail: React.FC<MethodDetailProps> = ({
+  method,
+  documentTitle,
+}) => (
   <div className="space-y-6">
+    {documentTitle && (
+      <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+          {documentTitle}
+        </h1>
+        <BreadCrumb path={method.name} />
+      </div>
+    )}
     <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
       <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">
         {method.name}
