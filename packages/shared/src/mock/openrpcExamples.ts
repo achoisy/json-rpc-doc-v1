@@ -92,6 +92,21 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
             },
           },
         },
+        {
+          name: 'get_block_example',
+          params: [
+            { name: 'blockNumber', value: 'latest' },
+            { name: 'includeFullTransactions', value: false },
+          ],
+          result: {
+            name: 'get_block_example',
+            value: {
+              number: '0x5bad55',
+              transactions: [],
+              timestamp: '0x5f5e0a6a',
+            },
+          },
+        },
       ],
     },
     {
