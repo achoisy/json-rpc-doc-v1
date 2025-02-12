@@ -20,7 +20,7 @@ export const buildFileTree = (methods: MethodObject[]): FileTreeItem => {
     const pathSegments = method.name.split('/');
     let current = root;
 
-    pathSegments.forEach((segment, index) => {
+    pathSegments.forEach((segment: string, index: number) => {
       const isLeaf = index === pathSegments.length - 1;
 
       if (!current.children.has(segment)) {

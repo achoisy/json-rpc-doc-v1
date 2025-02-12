@@ -1,6 +1,10 @@
-import type { OpenrpcDocument, MethodObject } from '@open-rpc/meta-schema';
+import type {
+  OpenrpcDocument,
+  MethodObject,
+  ContentDescriptorOrReference,
+} from '@open-rpc/meta-schema';
 
-export type { OpenrpcDocument, MethodObject };
+export type { OpenrpcDocument, MethodObject, ContentDescriptorOrReference };
 
 export interface OpenRPCStorage {
   document: OpenrpcDocument;

@@ -1,5 +1,8 @@
 import React from 'react';
-import type { MethodObject, ParameterOrReference } from '@rpcdoc/shared';
+import type {
+  MethodObject,
+  ContentDescriptorOrReference,
+} from '@rpcdoc/shared';
 import { CodeExample } from '../code/CodeExample';
 
 interface ParametersSectionProps {
@@ -15,7 +18,7 @@ export const ParametersSection: React.FC<ParametersSectionProps> = ({
     <div>
       <h2 className="text-lg font-semibold mb-4">Parameters</h2>
       <div className="space-y-4">
-        {params.map((paramRef: ParameterOrReference, index) => {
+        {params.map((paramRef: ContentDescriptorOrReference, index) => {
           if (!('name' in paramRef)) return null;
 
           const param = paramRef;
