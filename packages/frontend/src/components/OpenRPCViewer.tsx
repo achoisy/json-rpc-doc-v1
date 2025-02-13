@@ -23,12 +23,16 @@ const OpenRPCViewer: React.FC = () => {
 
   const { tree: fileTree, toggleFolder } = useFileTree(methods);
 
+  const handleMethodSelect = (method: MethodObject | null) => {
+    setSelectedMethod(method);
+  };
+
   return (
     <ViewerLayout>
       <Sidebar
         fileTree={fileTree}
         toggleFolder={toggleFolder}
-        setSelectedMethod={setSelectedMethod}
+        setSelectedMethod={handleMethodSelect}
         selectedMethod={selectedMethod}
       />
       <MainContent

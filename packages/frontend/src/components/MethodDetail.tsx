@@ -7,18 +7,11 @@ import Layout from './method-detail/Layout';
  */
 export interface MethodDetailProps {
   method: MethodObject;
-  documentTitle?: string;
   service: OpenRPCService;
 }
 
-const MethodDetail: React.FC<MethodDetailProps> = ({
-  method,
-  documentTitle,
-  service,
-}) => {
-  return (
-    <Layout method={method} documentTitle={documentTitle} service={service} />
-  );
+const MethodDetail: React.FC<MethodDetailProps> = ({ method, service }) => {
+  return <Layout method={method} service={service} />;
 };
 
 export default MethodDetail;
