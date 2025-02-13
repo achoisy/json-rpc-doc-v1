@@ -92,6 +92,7 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
       params: [
         {
           name: 'accountId',
+          required: true,
           schema: {
             type: 'string',
           },
@@ -152,6 +153,7 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
       params: [
         {
           name: 'accountId',
+          required: true,
           schema: {
             type: 'string',
           },
@@ -159,6 +161,7 @@ export const sampleOpenrpcDocument: OpenrpcDocument = {
         },
         {
           name: 'points',
+          required: true,
           schema: {
             type: 'number',
           },

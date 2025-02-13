@@ -1,21 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import type { MethodObject } from '@rpcdoc/shared';
+import type {
+  ExamplePairingObject,
+  ExampleObject,
+  ErrorObject,
+} from '@rpcdoc/shared';
 import { SyntaxHighlighter } from '../code/SyntaxHighlighter';
 
 type ResponseTab = 'success' | 'error';
 
 interface ResponseTabsProps {
-  method: MethodObject;
+  example: ExamplePairingObject;
+  error?: ErrorObject;
 }
 
-export const ResponseTabs: React.FC<ResponseTabsProps> = ({ method }) => {
+const isExampleObject = (obj: any): obj is ExampleObject => {
+  return obj && typeof obj === 'object' && 'value' in obj;
+};
+
+export const ResponseTabs: React.FC<ResponseTabsProps> = ({
+  example,
+  error,
+}) => {
   const [activeTab, setActiveTab] = useState<ResponseTab>('success');
 
-  const example = method.examples?.[0];
-  const firstError = method.errors?.[0];
+  const resolvedResult =
+    example.result && isExampleObject(example.result)
+      ? example.result.value
+      : undefined;
 
-  const hasSuccessExample = example && 'result' in example && example.result;
-  const hasError = firstError && 'code' in firstError;
+  const hasSuccessExample = !!resolvedResult;
+  const hasError = !!error;
 
   // Reset to available tab when examples/errors change or on mount
   useEffect(() => {
@@ -29,15 +43,15 @@ export const ResponseTabs: React.FC<ResponseTabsProps> = ({ method }) => {
   const responseExample = {
     success: hasSuccessExample && {
       jsonrpc: '2.0',
-      result: example.result,
+      result: resolvedResult,
       id: 1,
     },
     error: hasError && {
       jsonrpc: '2.0',
       error: {
-        code: firstError.code,
-        message: firstError.message,
-        data: 'data' in firstError ? firstError.data : undefined,
+        code: error.code,
+        message: error.message,
+        data: error.data,
       },
       id: 1,
     },
@@ -76,7 +90,7 @@ export const ResponseTabs: React.FC<ResponseTabsProps> = ({ method }) => {
       </div>
 
       {/* Content */}
-      <div className="">
+      <div>
         {activeTab === 'success' && responseExample.success && (
           <SyntaxHighlighter
             code={JSON.stringify(responseExample.success, null, 2)}

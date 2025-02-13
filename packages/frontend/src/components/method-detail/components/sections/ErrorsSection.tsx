@@ -1,23 +1,38 @@
 import React from 'react';
-import type { MethodObject, ErrorObject } from '@rpcdoc/shared';
+import type { MethodObject, ErrorObject, OpenRPCService } from '@rpcdoc/shared';
 import { CodeExample } from '../code/CodeExample';
 
 interface ErrorsSectionProps {
   errors?: MethodObject['errors'];
+  service: OpenRPCService;
 }
 
-export const ErrorsSection: React.FC<ErrorsSectionProps> = ({ errors }) => {
+export const ErrorsSection: React.FC<ErrorsSectionProps> = ({
+  errors,
+  service,
+}) => {
   if (!errors?.length) return null;
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4">Errors</h2>
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold">Errors</h2>
       <div className="space-y-4">
         {errors.map((errorRef, index) => {
-          // Skip reference objects for now
-          if (!('code' in errorRef)) return null;
-
-          const error = errorRef as ErrorObject;
+          let error: ErrorObject;
+          try {
+            if ('$ref' in errorRef) {
+              error = service.resolveReference(errorRef.$ref) as ErrorObject;
+            } else {
+              error = errorRef as ErrorObject;
+            }
+          } catch (e) {
+            return (
+              <div key={index} className="text-red-500">
+                Error resolving error reference:{' '}
+                {'$ref' in errorRef ? errorRef.$ref : 'unknown reference'}
+              </div>
+            );
+          }
 
           return (
             <div

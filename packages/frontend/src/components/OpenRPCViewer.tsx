@@ -34,6 +34,7 @@ const OpenRPCViewer: React.FC = () => {
       <MainContent
         selectedMethod={selectedMethod}
         documentTitle={document.info.title}
+        service={service}
       />
     </ViewerLayout>
   );

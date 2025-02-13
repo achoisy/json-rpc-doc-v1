@@ -1,5 +1,5 @@
 import React from 'react';
-import type { MethodObject } from '@rpcdoc/shared';
+import type { MethodObject, OpenRPCService } from '@rpcdoc/shared';
 import Layout from './method-detail/Layout';
 
 /**
@@ -8,10 +8,17 @@ import Layout from './method-detail/Layout';
 export interface MethodDetailProps {
   method: MethodObject;
   documentTitle?: string;
+  service: OpenRPCService;
 }
 
-const MethodDetail: React.FC<MethodDetailProps> = props => {
-  return <Layout {...props} />;
+const MethodDetail: React.FC<MethodDetailProps> = ({
+  method,
+  documentTitle,
+  service,
+}) => {
+  return (
+    <Layout method={method} documentTitle={documentTitle} service={service} />
+  );
 };
 
 export default MethodDetail;
