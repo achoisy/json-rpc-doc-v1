@@ -16,7 +16,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ method, documentTitle, service }) => {
   return (
-    <div className="p-8">
+    <div className="p-4">
       <MethodHeader method={method} documentTitle={documentTitle} />
 
       <div className="flex flex-col lg:flex-row gap-8 mt-8">

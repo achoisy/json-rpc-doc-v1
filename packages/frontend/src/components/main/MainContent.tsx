@@ -25,8 +25,8 @@ const MainContent: React.FC<MainContentProps> = ({
   }, [selectedMethod]);
 
   return (
-    <div className="space-y-8 p-8">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+    <div className="space-y-8 md:p-8">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 p-4">
         {documentTitle}
       </h1>
       {methods.map(method => (
