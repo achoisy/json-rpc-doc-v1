@@ -27,7 +27,11 @@ const Layout: React.FC<LayoutProps> = ({ method, documentTitle, service }) => {
             examples={method.examples}
             service={service}
           />
-          <ResultSection result={method.result} service={service} />
+          <ResultSection
+            result={method.result}
+            examples={method.examples}
+            service={service}
+          />
           <ErrorsSection errors={method.errors} service={service} />
         </div>
 
