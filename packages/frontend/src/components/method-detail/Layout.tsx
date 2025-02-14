@@ -22,7 +22,11 @@ const Layout: React.FC<LayoutProps> = ({ method, documentTitle, service }) => {
       <div className="flex flex-col lg:flex-row gap-8 mt-8">
         {/* Left Column - Method Details */}
         <div className="flex-1 space-y-8">
-          <ParametersSection params={method.params} service={service} />
+          <ParametersSection
+            params={method.params}
+            examples={method.examples}
+            service={service}
+          />
           <ResultSection result={method.result} service={service} />
           <ErrorsSection errors={method.errors} service={service} />
         </div>

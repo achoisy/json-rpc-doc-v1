@@ -5,13 +5,212 @@ import type {
   JSONSchema,
   JSONSchemaObject,
   OpenRPCService,
+  ExamplePairingObject,
+  ExampleObject,
 } from '@rpcdoc/shared';
-import { CodeExample } from '../code/CodeExample';
+
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { SyntaxHighlighter } from '../code/SyntaxHighlighter';
+
+type TabType = 'schema' | 'example';
+
+interface ParameterTabsProps {
+  name: string;
+  schema: JSONSchema;
+  service: OpenRPCService;
+  examples?: MethodObject['examples'];
+}
+
+const resolveSchemaWithReferences = (
+  schema: JSONSchema,
+  service: OpenRPCService,
+  visited = new Set<string>()
+): JSONSchema => {
+  if (typeof schema !== 'object' || schema === null) {
+    return schema;
+  }
+
+  const schemaObj = schema as JSONSchemaObject;
+
+  if (schemaObj.$ref) {
+    if (visited.has(schemaObj.$ref)) {
+      return { $ref: schemaObj.$ref, circular: true };
+    }
+    visited.add(schemaObj.$ref);
+    try {
+      const resolved = service.resolveReference(schemaObj.$ref);
+      const resolvedSchema = resolveSchemaWithReferences(
+        resolved,
+        service,
+        visited
+      );
+      return Object.assign({}, resolvedSchema, { originalRef: schemaObj.$ref });
+    } catch (error) {
+      return { $ref: schemaObj.$ref, error: 'Failed to resolve reference' };
+    }
+  }
+
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(schemaObj)) {
+    if (key === 'properties' && typeof value === 'object') {
+      result.properties = {};
+      for (const [propKey, propValue] of Object.entries(value)) {
+        (result.properties as Record<string, unknown>)[propKey] =
+          resolveSchemaWithReferences(
+            propValue as JSONSchema,
+            service,
+            new Set(visited)
+          );
+      }
+    } else if (key === 'items' && value) {
+      result.items = resolveSchemaWithReferences(
+        value as JSONSchema,
+        service,
+        new Set(visited)
+      );
+    } else if (key === 'additionalProperties' && typeof value === 'object') {
+      result.additionalProperties = resolveSchemaWithReferences(
+        value as JSONSchema,
+        service,
+        new Set(visited)
+      );
+    } else {
+      result[key] = value;
+    }
+  }
+
+  return result as JSONSchema;
+};
+
+const CustomCodeExample: React.FC<{ value: unknown }> = ({ value }) => {
+  return (
+    <div className="w-full">
+      <SyntaxHighlighter
+        code={JSON.stringify(value, null, 2)}
+        customStyle={{
+          display: 'block',
+          padding: '1rem',
+          margin: 0,
+          backgroundColor: 'transparent',
+          borderRadius: '0.375rem',
+          fontSize: '0.875rem',
+          lineHeight: '1.5',
+          whiteSpace: 'pre',
+        }}
+      />
+    </div>
+  );
+};
+
+const ParameterTabs: React.FC<ParameterTabsProps> = ({
+  name,
+  schema,
+  service,
+  examples,
+}) => {
+  const [activeTab, setActiveTab] = React.useState<TabType>('schema');
+
+  const resolvedSchema = React.useMemo(
+    () => resolveSchemaWithReferences(schema, service),
+    [schema, service]
+  );
+
+  const firstExample = examples?.[0];
+  let params: ExampleObject[] | undefined;
+
+  React.useEffect(() => {
+    if (firstExample) {
+      setActiveTab('example');
+    }
+  }, [firstExample]);
+
+  if (firstExample) {
+    let resolvedExample: ExamplePairingObject;
+    try {
+      resolvedExample =
+        '$ref' in firstExample
+          ? (service.resolveReference(
+              firstExample.$ref
+            ) as ExamplePairingObject)
+          : firstExample;
+    } catch (error) {
+      return (
+        <div className="text-red-500">
+          Error resolving example:{' '}
+          {'$ref' in firstExample ? firstExample.$ref : 'unknown reference'}
+        </div>
+      );
+    }
+
+    const isExampleObject = (obj: any): obj is ExampleObject => {
+      return obj && typeof obj === 'object' && 'value' in obj;
+    };
+
+    params = resolvedExample.params
+      ?.map(param => {
+        if ('$ref' in param) {
+          try {
+            return service.resolveReference(param.$ref) as ExampleObject;
+          } catch {
+            return undefined;
+          }
+        }
+        return param;
+      })
+      .filter(isExampleObject);
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex space-x-1 border-b border-gray-200 dark:border-gray-700">
+        {params && params.length > 0 && (
+          <button
+            onClick={() => setActiveTab('example')}
+            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
+              activeTab === 'example'
+                ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-500 dark:border-blue-500'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+            }`}
+          >
+            Example
+          </button>
+        )}
+        <button
+          onClick={() => setActiveTab('schema')}
+          className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
+            activeTab === 'schema'
+              ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-500 dark:border-blue-500'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          }`}
+        >
+          Schema
+        </button>
+      </div>
+
+      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
+        {activeTab === 'schema' ? (
+          <div className="relative">
+            {typeof schema === 'object' && (
+              <div className="w-full overflow-x-auto">
+                <CustomCodeExample value={resolvedSchema} />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="w-full overflow-x-auto">
+            <CustomCodeExample value={params?.[0].value[name]} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 interface ParametersSectionProps {
   params?: MethodObject['params'];
   service: OpenRPCService;
+  examples?: MethodObject['examples'];
 }
 
 interface SchemaViewerProps {
@@ -137,78 +336,90 @@ export const SchemaViewer: React.FC<SchemaViewerProps> = ({
 export const ParametersSection: React.FC<ParametersSectionProps> = ({
   params,
   service,
+  examples,
 }) => {
+  const [expandedParams, setExpandedParams] = React.useState<
+    Record<string, boolean>
+  >({});
+
   if (!params?.length) return null;
 
+  const toggleParamExpand = (paramName: string) => {
+    setExpandedParams(prev => ({
+      ...prev,
+      [paramName]: !prev[paramName],
+    }));
+  };
+
   return (
-    <div className="space-y-8">
-      <h2 className="text-lg font-semibold">Parameters</h2>
-      <div className="space-y-6">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Parameters</h2>
+        <div className="text-sm text-gray-500">application/json</div>
+      </div>
+
+      <div className="border border-gray-200 dark:border-gray-700 rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
         {params.map((paramRef: ContentDescriptorOrReference, index) => {
           let param;
           try {
             param = service.resolveContentDescriptor(paramRef);
           } catch (error) {
             return (
-              <div key={index} className="text-red-500">
+              <div key={index} className="text-red-500 p-4">
                 Error resolving parameter:{' '}
                 {'$ref' in paramRef ? paramRef.$ref : 'unknown reference'}
               </div>
             );
           }
 
+          const isParamExpanded = expandedParams[param.name] || false;
+
           return (
-            <div
-              key={index}
-              className="border dark:border-gray-800 rounded-lg p-4 space-y-4"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-medium text-gray-900 dark:text-white">
+            <div key={index} className="group">
+              <button
+                onClick={() => toggleParamExpand(param.name)}
+                className="flex items-center gap-4 w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+              >
+                {isParamExpanded ? (
+                  <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                ) : (
+                  <ChevronRightIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                )}
+                <span className="font-mono text-gray-600 dark:text-gray-300">
                   {param.name}
                 </span>
+                <span className="text-gray-400">
+                  {param.schema &&
+                  typeof param.schema === 'object' &&
+                  'type' in param.schema
+                    ? param.schema.type
+                    : 'any'}
+                </span>
                 {param.required && (
-                  <span className="px-2 py-1 text-xs font-medium text-red-500 bg-red-50 dark:bg-red-900/20 rounded">
-                    Required
-                  </span>
+                  <span className="text-xs text-blue-500">read-only</span>
                 )}
-                {param.deprecated && (
-                  <span className="px-2 py-1 text-xs font-medium text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 rounded">
-                    Deprecated
-                  </span>
-                )}
-              </div>
+              </button>
 
-              {param.description && (
-                <p className="text-gray-600 dark:text-gray-300">
-                  {param.description}
-                </p>
-              )}
+              {isParamExpanded && (
+                <div className="px-4 pb-4 space-y-4">
+                  {param.description && (
+                    <p className="text-gray-600 dark:text-gray-400 text-sm ml-8">
+                      {param.description}
+                    </p>
+                  )}
 
-              {param.schema && (
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Schema
-                  </h4>
-                  <div className="bg-gray-50 dark:bg-gray-900/50 rounded p-3">
-                    <SchemaViewer schema={param.schema} service={service} />
-                  </div>
+                  {param.schema && (
+                    <div className="ml-8">
+                      <ParameterTabs
+                        name={param.name}
+                        schema={param.schema}
+                        service={service}
+                        examples={examples}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
-
-              {typeof param.schema === 'object' &&
-                param.schema &&
-                'examples' in param.schema && (
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Examples
-                    </h4>
-                    <div className="space-y-2">
-                      {param.schema.examples?.map((example, i) => (
-                        <CodeExample key={i} value={example} />
-                      ))}
-                    </div>
-                  </div>
-                )}
             </div>
           );
         })}
