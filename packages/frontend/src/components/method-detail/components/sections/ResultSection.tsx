@@ -7,7 +7,7 @@ import type {
   JSONSchema,
 } from '@rpcdoc/shared';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { SyntaxHighlighter } from '../code/SyntaxHighlighter';
+import { CodeExample } from '../code/CodeExample';
 
 import { resolveSchemaWithReferences } from '../../../../utils/schema';
 
@@ -19,26 +19,6 @@ interface ResultTabsProps {
   service: OpenRPCService;
   examples?: MethodObject['examples'];
 }
-
-const CustomCodeExample: React.FC<{ value: unknown }> = ({ value }) => {
-  return (
-    <div className="w-full">
-      <SyntaxHighlighter
-        code={JSON.stringify(value, null, 2)}
-        customStyle={{
-          display: 'block',
-          padding: '1rem',
-          margin: 0,
-          backgroundColor: 'transparent',
-          borderRadius: '0.375rem',
-          fontSize: '0.875rem',
-          lineHeight: '1.5',
-          whiteSpace: 'pre',
-        }}
-      />
-    </div>
-  );
-};
 
 const ResultTabs: React.FC<ResultTabsProps> = ({
   name,
@@ -127,11 +107,11 @@ const ResultTabs: React.FC<ResultTabsProps> = ({
         </button>
       </div>
 
-      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
+      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg">
         {activeTab === 'example' ? (
           <div className="w-full overflow-x-auto">
             {result ? (
-              <CustomCodeExample value={result.value[name]} />
+              <CodeExample value={result.value[name]} />
             ) : (
               <div className="text-gray-500 italic">No example available</div>
             )}
@@ -140,7 +120,7 @@ const ResultTabs: React.FC<ResultTabsProps> = ({
           <div className="relative">
             {typeof schema === 'object' && (
               <div className="w-full overflow-x-auto">
-                <CustomCodeExample value={resolvedSchema} />
+                <CodeExample value={resolvedSchema} />
               </div>
             )}
           </div>
@@ -181,7 +161,6 @@ export const ResultSection: React.FC<ResultSectionProps> = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Result</h2>
-        <div className="text-sm text-gray-500">application/json</div>
       </div>
 
       <div className="border border-gray-200 dark:border-gray-700 rounded-lg">

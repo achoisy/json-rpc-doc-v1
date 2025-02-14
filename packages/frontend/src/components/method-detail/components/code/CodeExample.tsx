@@ -7,17 +7,18 @@ interface CodeExampleProps {
 
 export const CodeExample: React.FC<CodeExampleProps> = ({ value }) => {
   return (
-    <div className="mt-2">
-      <SyntaxHighlighter
-        code={JSON.stringify(value)}
-        customStyle={{
-          display: 'inline',
-          padding: '0.2em 0.4em',
-          margin: 0,
-          backgroundColor: 'var(--tw-prose-pre-bg)',
-          borderRadius: '0.375rem',
-        }}
-      />
-    </div>
+    <SyntaxHighlighter
+      code={JSON.stringify(value, null, 2)}
+      customStyle={{
+        display: 'block',
+        padding: '0.5rem',
+        margin: 0,
+        backgroundColor: 'transparent',
+        borderRadius: '0.375rem',
+        fontSize: '0.800rem',
+        lineHeight: '1.5',
+        whiteSpace: 'pre',
+      }}
+    />
   );
 };

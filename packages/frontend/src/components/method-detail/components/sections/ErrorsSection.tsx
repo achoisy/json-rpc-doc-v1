@@ -44,7 +44,7 @@ const ErrorTabs: React.FC<ErrorTabsProps> = ({ error }) => {
         )}
       </div>
 
-      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
+      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg">
         {activeTab === 'message' ? (
           <div className="text-gray-700 dark:text-gray-300 break-words">
             <CodeExample value={error.message} />
