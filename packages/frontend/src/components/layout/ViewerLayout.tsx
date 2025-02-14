@@ -16,7 +16,7 @@ const ViewerLayout: React.FC<ViewerLayoutProps> = ({ children }) => {
           {React.Children.toArray(children)[0]}
         </div>
         {/* Main content wrapper */}
-        <div className="flex-1 md:ml-72">
+        <div className="flex-1">
           {/* Second child is the main content */}
           {React.Children.toArray(children)[1]}
         </div>
