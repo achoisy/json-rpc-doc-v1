@@ -8,7 +8,6 @@ interface CodeExampleProps {
 export const CodeExample: React.FC<CodeExampleProps> = ({ value }) => {
   return (
     <div className="mt-2">
-      <span className="text-sm text-gray-500">Example: </span>
       <SyntaxHighlighter
         code={JSON.stringify(value)}
         customStyle={{
