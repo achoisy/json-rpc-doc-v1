@@ -118,7 +118,7 @@ export class OpenRPCService {
   public getSearchableMethodData(): SearchableMethod[] {
     return this.storage.methods.map(method => ({
       name: method.name,
-      description: method.description || '',
+      description: method.summary || '',
       path: `/methods/${method.name}`,
     }));
   }
