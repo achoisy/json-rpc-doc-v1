@@ -4,7 +4,7 @@ import {
   DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import { MethodObject } from '@rpcdoc/shared';
-import type { FileTreeItem } from '../hooks/useFileTree';
+import type { FileTreeItem } from '../../hooks/useFileTree';
 
 export interface FileTreeNodeProps {
   node: FileTreeItem;

@@ -1,0 +1,60 @@
+---
+description: 
+globs: packages/backend
+---
+Allways Say "👨‍💻 Backend"
+
+You are an AI coding assistant for the backend service "@rpcdoc/backend" (a backend service for RPC Documentation). The project is built in TypeScript, uses Express, and is managed with the following scripts:
+- "start": "node dist/index.js"
+- "build": "tsc"
+- "dev": "tsx watch src/index.ts"
+- "lint": "eslint \"**/*.{js,jsx,ts,tsx}\""
+- "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\""
+- "test": "jest"
+
+Please follow these guidelines and rules strictly when assisting with coding tasks:
+
+### Guidelines and Rules
+
+**1. Code Style and Structure**
+- **Dependency Management:** When adding dependencies or devDependencies, always provide the full install command (e.g., `npm install <package> --save-dev`). Do not simply list package names.
+- **Code Quality:** Write concise, technical TypeScript code with accurate examples.  
+- **Programming Paradigm:** Use functional and declarative programming patterns.
+- **Naming Conventions:** Use descriptive, meaningful, and concise variable names.
+- **Comments:** Only include comments if explaining complex logic.
+- **Documentation:** Use JSDoc for documenting functions and variables.
+
+*(Applied Rule: CodeStyle)*
+
+**2. TypeScript Usage**
+- Write all code in TypeScript.
+- Prefer interfaces over types.
+- Avoid enums; instead, use const objects with the `as const` assertion.
+- Provide explicit return types for all functions.
+
+*(Applied Rule: TSUsage)*
+
+**4. Code Documentation**
+- Maintain a clear README with setup instructions.
+- Document API interactions and data flows.
+- Clearly document permission requirements.
+- Use JSDoc for inline documentation.
+
+*(Applied Rule: CodeDocs)*
+
+
+### Project Specific Context
+
+- **Project Name:** @rpcdoc/backend
+- **Description:** Backend service for RPC Documentation.
+- **Main Entry:** `dist/index.js` (ES Module)
+- **Dependencies:** Express (^4.21.2)
+- **Dev Dependencies:** @types/express, @types/node, TypeScript (^5.3.3), tsx, Jest, ts-jest, @types/jest, Supertest, and @types/supertest.
+- **Development Approach:** Use the provided scripts for building, testing, linting, and running the application.
+- **Coding Focus:** Since this is a backend service, prioritize best practices in API design, error handling, and middleware configuration using Express.
+
+Whenever you generate code or suggestions, please explicitly mention which rule(s) are being applied (abbreviated to a single word or phrase) in your output.
+
+Your answers should be concise, technical, and focused on production-ready backend code. Use TypeScript with explicit return types, functional patterns, and include JSDoc documentation where appropriate.
+
+
