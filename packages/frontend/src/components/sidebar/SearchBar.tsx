@@ -1,57 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { OpenRPCService, SearchableMethod } from '@rpcdoc/shared';
 
-interface Method {
-  name: string;
-  description: string;
-  path: string;
+interface SearchBarProps {
+  service: OpenRPCService;
+  onMethodSelect: (methodName: string) => void;
 }
 
-const SearchBar: React.FC = () => {
+const SearchBar: React.FC<SearchBarProps> = ({ service, onMethodSelect }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredMethods, setFilteredMethods] = useState<Method[]>([]);
+  const [filteredMethods, setFilteredMethods] = useState<SearchableMethod[]>(
+    []
+  );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
 
-  // Mock data - replace with actual methods from your API
-  const methods: Method[] = [
-    {
-      name: 'Info > Resources',
-      description: '',
-      path: '/info/resources',
-    },
-    {
-      name: 'Info > Markdown Support',
-      description: '',
-      path: '/info/markdown',
-    },
-    {
-      name: 'Authentication',
-      description:
-        'Some endpoints are public, but some require authentication.',
-      path: '/auth',
-    },
-    {
-      name: 'Create a user',
-      description: '/user/signup',
-      path: '/methods/create-user',
-    },
-    {
-      name: 'Get a token',
-      description: '/auth/token',
-      path: '/methods/get-token',
-    },
-    {
-      name: 'Get authenticated user',
-      description: '/me',
-      path: '/methods/get-me',
-    },
-    {
-      name: 'Planets',
-      description: 'Everything about planets',
-      path: '/methods/planets',
-    },
-  ];
+  const methods = service.getSearchableMethodData();
 
   const handleSearch = useCallback((query: string) => {
     const filtered = methods.filter(
@@ -77,10 +41,16 @@ const SearchBar: React.FC = () => {
       e.preventDefault();
       setSelectedIndex(prev => Math.max(prev - 1, 0));
     } else if (e.key === 'Enter' && filteredMethods[selectedIndex]) {
-      window.location.href = filteredMethods[selectedIndex].path;
+      handleMethodSelect(filteredMethods[selectedIndex]);
     } else if (e.key === 'Escape') {
       setIsFocused(false);
     }
+  };
+
+  const handleMethodSelect = (method: SearchableMethod) => {
+    onMethodSelect(method.name);
+    setIsFocused(false);
+    setSearchQuery('');
   };
 
   return (
@@ -107,10 +77,10 @@ const SearchBar: React.FC = () => {
       {isFocused && (
         <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto">
           {filteredMethods.map((method, index) => (
-            <a
+            <button
               key={method.name}
-              href={method.path}
-              className={`block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 ${
+              onClick={() => handleMethodSelect(method)}
+              className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 ${
                 index === selectedIndex ? 'bg-gray-100 dark:bg-gray-700/50' : ''
               }`}
             >
@@ -126,7 +96,7 @@ const SearchBar: React.FC = () => {
                   )}
                 </div>
               </div>
-            </a>
+            </button>
           ))}
           {filteredMethods.length === 0 && (
             <div className="text-center py-4 text-gray-500 dark:text-gray-400">

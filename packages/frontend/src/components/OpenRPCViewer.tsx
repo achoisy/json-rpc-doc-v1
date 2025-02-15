@@ -34,6 +34,7 @@ const OpenRPCViewer: React.FC = () => {
         toggleFolder={toggleFolder}
         setSelectedMethod={handleMethodSelect}
         selectedMethod={selectedMethod}
+        service={service}
       />
       <MainContent
         selectedMethod={selectedMethod}

@@ -1,7 +1,7 @@
 import React from 'react';
-import { MethodObject } from '@rpcdoc/shared';
+import { MethodObject, OpenRPCService } from '@rpcdoc/shared';
 import { FileTreeItem } from '../../hooks/useFileTree';
-import FileTreeNode from '../FileTreeNode';
+import FileTreeNode from './FileTreeNode';
 import SearchBar from './SearchBar';
 
 interface SidebarProps {
@@ -9,6 +9,7 @@ interface SidebarProps {
   toggleFolder: (path: string) => void;
   setSelectedMethod: (method: MethodObject | null) => void;
   selectedMethod: MethodObject | null;
+  service: OpenRPCService;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -16,12 +17,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   toggleFolder,
   setSelectedMethod,
   selectedMethod,
+  service,
 }) => {
+  const handleMethodSelect = (methodName: string) => {
+    const method = service.getMethods().find(m => m.name === methodName);
+    if (method) {
+      setSelectedMethod(method);
+    }
+  };
+
   return (
     <aside className="w-full md:w-72 md:fixed md:left-0 md:top-14 md:bottom-0 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 md:shadow-lg md:shadow-gray-200/10 dark:md:shadow-black/30 z-40">
       <div className="h-full flex flex-col">
         <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-          <SearchBar />
+          <SearchBar service={service} onMethodSelect={handleMethodSelect} />
         </div>
         <nav className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
           <div className="px-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">

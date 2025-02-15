@@ -8,6 +8,12 @@ import type {
 } from '@open-rpc/meta-schema';
 import { OpenRPCStorage, OpenrpcDocument } from '../types';
 
+export interface SearchableMethod {
+  name: string;
+  description: string;
+  path: string;
+}
+
 /**
  * Service for handling OpenRPC document operations.
  */
@@ -102,6 +108,19 @@ export class OpenRPCService {
     }
 
     return resolved;
+  }
+
+  /**
+   * Returns formatted method data suitable for search functionality.
+   *
+   * @returns {SearchableMethod[]} Array of searchable method data
+   */
+  public getSearchableMethodData(): SearchableMethod[] {
+    return this.storage.methods.map(method => ({
+      name: method.name,
+      description: method.description || '',
+      path: `/methods/${method.name}`,
+    }));
   }
 
   /**
